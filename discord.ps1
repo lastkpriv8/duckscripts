@@ -1,4 +1,4 @@
-$hookurl = 'https://discord.com/api/webhooks/1246076287580115045/2xidT8BNCNkVxLdC64rjp04Oul87fDUVtTSHN-gEil_vhYAFDmfLUuYaDIbkHNe8RKKI'
+$hookurl = 'https://discord.com/api/webhooks/1262807444120408064/Vu2LIdSUTm3Nu29Y6Z-9nxuK_NcDhw1xpZtIYPUKtBWLjHUN7m-_ZGeSBql4LTD1IJDP'
 
 function Upload-Discord {
     [CmdletBinding()]
